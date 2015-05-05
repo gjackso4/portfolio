@@ -1,0 +1,47 @@
+$(document).ready(function(){
+
+	var debug = 1;
+	var tag = "";
+	var count = 10;
+	var access_token = '188256414.aa0b59c.1de300dd6a164d008f932a3299fb3e15';
+	var access_parameters = {access_token:access_token};
+
+function grabImages(parameters) {
+
+  var instagramUrl = 'https://api.instagram.com/v1/tags/' + tag + '/media/recent?callback=?&count='+ count;
+
+  $.getJSON(instagramUrl, access_parameters, onDataLoaded);
+
+}
+
+function onDataLoaded(data) {
+		var photoHTML = "";
+	 //  	console.log(data);
+	  	$.each(data.data, function(i, photo){
+	  		photoHTML += "<a target='_blank' href='" + photo.link + "'><li>";
+	  		photoHTML += "<img src='" + photo.images.low_resolution.url + "'>";
+	  		photoHTML += "</li></a><p>" + photo.caption.text + "</p>";
+	  		photoHTML += "<img src='" + photo.user.profile_picture + "'>";
+	  		if(debug){console.log(photo)};
+	  		$('.photos').html(photoHTML);
+	  	});
+}
+
+$('#search').submit(function(evt){
+evt.preventDefault();
+tag = $('#search_field').val();
+grabImages(access_parameters);
+});
+
+	// Controls
+	$('.next').click(function(){
+		$(".photos").animate({
+    		marginLeft: '-=306px'
+		}, 500);
+	});
+	$('.prev').click(function(){
+		$(".photos").animate({
+    		marginLeft: '+=306px'
+		}, 500);
+	});
+});
